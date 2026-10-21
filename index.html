@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veterans 5K — Fundraising Tracker</title>
+<style>
+:root {
+  --bg: #0a0e1a;
+  --card: #131826;
+  --border: #1e2433;
+  --text: #e4e7ee;
+  --muted: #6b7280;
+  --accent: #3b82f6;
+  --gold: #fbbf24;
+  --green: #10b981;
+  --red: #ef4444;
+  --purple: #a78bfa;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+.container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+/* Header */
+.header { text-align: center; padding: 30px 20px; margin-bottom: 24px; background: linear-gradient(135deg, #0d1525, #162033); border-radius: 16px; border: 1px solid var(--border); }
+.header h1 { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+.header .subtitle { color: var(--muted); font-size: 14px; }
+.flag { font-size: 32px; }
+
+/* Total */
+.total-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 32px; text-align: center; margin-bottom: 24px; }
+.total-card .label { color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.total-card .amount { font-size: 48px; font-weight: 800; color: var(--green); }
+.total-card .breakdown { display: flex; justify-content: center; gap: 24px; margin-top: 16px; flex-wrap: wrap; }
+.total-card .breakdown-item { text-align: center; }
+.total-card .breakdown-item .num { font-size: 20px; font-weight: 700; }
+.total-card .breakdown-item .lbl { color: var(--muted); font-size: 12px; }
+
+/* Progress bar */
+.progress-wrap { margin: 20px 0; }
+.progress-bar { background: var(--border); border-radius: 999px; height: 8px; overflow: hidden; }
+.progress-fill { background: linear-gradient(90deg, var(--green), var(--accent)); height: 100%; border-radius: 999px; transition: width 0.5s; }
+.progress-labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+/* Grid */
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+@media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+
+/* Card */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+.card h2 { font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+/* Table */
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); padding: 8px 0; border-bottom: 1px solid var(--border); }
+td { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 14px; }
+td:last-child { text-align: right; }
+.donor-name { font-weight: 600; }
+.donor-amt { color: var(--green); font-weight: 700; }
+.donor-date { color: var(--muted); font-size: 12px; }
+
+/* Leaderboard */
+.lb-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.lb-row:last-child { border-bottom: none; }
+.lb-rank { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; flex-shrink: 0; }
+.lb-rank.gold { background: rgba(251,191,36,0.15); color: var(--gold); }
+.lb-rank.silver { background: rgba(148,163,184,0.15); color: #94a3b8; }
+.lb-rank.bronze { background: rgba(180,83,9,0.15); color: #b45309; }
+.lb-rank.normal { background: rgba(59,130,246,0.1); color: var(--accent); }
+.lb-name { flex: 1; font-weight: 600; font-size: 14px; }
+.lb-pts { font-weight: 800; font-size: 18px; color: var(--purple); }
+.lb-pts-label { font-size: 11px; color: var(--muted); }
+
+/* Ticket stats */
+.ticket-stats { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.ticket-stat { flex: 1; min-width: 100px; background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.1); border-radius: 10px; padding: 12px; text-align: center; }
+.ticket-stat .num { font-size: 22px; font-weight: 700; }
+.ticket-stat .lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Add form */
+.add-form { display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+.add-form.active { display: block; }
+.form-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.form-row input, .form-row select { flex: 1; min-width: 120px; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 8px; font-size: 14px; }
+.form-row input:focus, .form-row select:focus { outline: none; border-color: var(--accent); }
+.btn { background: var(--accent); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; }
+.btn:hover { opacity: 0.9; }
+.btn-sm { padding: 6px 12px; font-size: 13px; }
+.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+.btn-danger { background: var(--red); }
+
+/* Toggle button */
+.toggle-add { margin-top: 12px; }
+
+/* Empty state */
+.empty { text-align: center; color: var(--muted); padding: 20px; font-size: 14px; }
+
+/* Footer */
+.footer { text-align: center; color: var(--muted); font-size: 12px; padding: 20px 0; }
+</style>
+</head>
+<body>
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    <div class="flag">🇺🇸</div>
+    <h1>Veterans 5K Fundraising Tracker</h1>
+    <div class="subtitle">Park City High School • Club America / TPUSA</div>
+  </div>
+
+  <!-- Total Raised -->
+  <div class="total-card">
+    <div class="label">Total Raised</div>
+    <div class="amount" id="total-amount">$0</div>
+    <div class="breakdown">
+      <div class="breakdown-item">
+        <div class="num" id="donation-total">$0</div>
+        <div class="lbl">Donations</div>
+      </div>
+      <div class="breakdown-item">
+        <div class="num" id="ticket-sales">$0</div>
+        <div class="lbl">Ticket Sales</div>
+      </div>
+      <div class="breakdown-item">
+        <div class="num" id="ticket-count">0</div>
+        <div class="lbl">Tickets Sold</div>
+      </div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progress" style="width: 0%"></div></div>
+      <div class="progress-labels">
+        <span>$0</span>
+        <span id="goal-label">$15,000 goal</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- Leaderboard -->
+    <div class="card">
+      <h2>🏆 Referral Leaderboard</h2>
+      <div id="leaderboard"></div>
+      <button class="btn btn-outline btn-sm toggle-add" onclick="toggleForm('lb-form')">+ Add referral</button>
+      <div class="add-form" id="lb-form">
+        <div class="form-row">
+          <input type="text" id="lb-name" placeholder="Name">
+          <input type="number" id="lb-pts" placeholder="Points" style="max-width: 100px">
+          <button class="btn btn-sm" onclick="addLeaderboard()">Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tickets -->
+    <div class="card">
+      <h2>🎟️ Tickets</h2>
+      <div class="ticket-stats">
+        <div class="ticket-stat"><div class="num" id="ts-count">0</div><div class="lbl">Sold</div></div>
+        <div class="ticket-stat"><div class="num" id="ts-revenue">$0</div><div class="lbl">Revenue</div></div>
+        <div class="ticket-stat"><div class="num" id="ts-price">$44</div><div class="lbl">Per Ticket</div></div>
+      </div>
+      <div id="ticket-list"></div>
+      <button class="btn btn-outline btn-sm toggle-add" onclick="toggleForm('ticket-form')">+ Add tickets</button>
+      <div class="add-form" id="ticket-form">
+        <div class="form-row">
+          <input type="text" id="ticket-source" placeholder="Source (e.g. Andrew's order)">
+          <input type="number" id="ticket-qty" placeholder="Qty" style="max-width: 80px">
+          <input type="number" id="ticket-amt" placeholder="$ Amount" style="max-width: 100px">
+          <button class="btn btn-sm" onclick="addTicket()">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Donations -->
+  <div class="card" style="margin-bottom: 24px;">
+    <h2>💰 Donations</h2>
+    <table id="donation-table">
+      <thead><tr><th>Donor</th><th>Date</th><th>Amount</th></tr></thead>
+      <tbody id="donation-list"></tbody>
+    </table>
+    <button class="btn btn-outline btn-sm toggle-add" style="margin-top: 12px;" onclick="toggleForm('donation-form')">+ Add donation</button>
+    <div class="add-form" id="donation-form">
+      <div class="form-row">
+        <input type="text" id="donor-name" placeholder="Donor name">
+        <input type="date" id="donor-date">
+        <input type="number" id="donor-amount" placeholder="$ Amount" style="max-width: 100px">
+        <button class="btn btn-sm" onclick="addDonation()">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Veterans 5K • Nov 7, 2026 • Park City, UT<br>
+    Data saved locally • <a href="#" onclick="exportData(); return false;" style="color: var(--accent);">Export</a> • <a href="#" onclick="importData(); return false;" style="color: var(--accent);">Import</a>
+  </div>
+</div>
+
+<script>
+const GOAL = 15000;
+const TICKET_PRICE = 44;
+
+// Default data
+const DEFAULT_DATA = {
+  donations: [
+    {name: "Outside Org", date: "2026-10-01", amount: 8000},
+    {name: "Blake Sawyer", date: "2026-10-10", amount: 1000},
+    {name: "Allison & Jimmy May", date: "2026-10-12", amount: 500},
+    {name: "Lora Watts", date: "2026-10-17", amount: 200},
+    {name: "The Nimocks", date: "2026-10-18", amount: 100},
+    {name: "Estrellita Hoffmann", date: "2026-10-19", amount: 100},
+    {name: "Birsic (Carl's sheet)", date: "2026-10-15", amount: 200},
+    {name: "Cimos (Carl's sheet)", date: "2026-10-15", amount: 100},
+    {name: "Veal (Carl's sheet)", date: "2026-10-15", amount: 100},
+    {name: "Summers (Carl's sheet)", date: "2026-10-15", amount: 50},
+  ],
+  tickets: [
+    {source: "Through Oct 12", qty: 10, amount: 440, date: "2026-10-12"},
+    {source: "Oct 14", qty: 4, amount: 176, date: "2026-10-14"},
+    {source: "Oct 15-21", qty: 17, amount: 748, date: "2026-10-21"},
+    {source: "Andrew's order", qty: 5, amount: 221, date: "2026-10-20"},
+  ],
+  leaderboard: [
+    {name: "Ely Shrayber", points: 7},
+    {name: "Sosie Sheffert", points: 7},
+    {name: "Andrew Perillo", points: 5},
+    {name: "Ledger Moffat", points: 4},
+    {name: "Campbell Thomas", points: 1},
+  ],
+};
+
+let data = JSON.parse(localStorage.getItem('veterans5k') || 'null') || DEFAULT_DATA;
+
+function save() { localStorage.setItem('veterans5k', JSON.stringify(data)); render(); }
+
+function fmt(n) { return '$' + n.toLocaleString(); }
+
+function render() {
+  // Totals
+  const donationTotal = data.donations.reduce((s, d) => s + d.amount, 0);
+  const ticketTotal = data.tickets.reduce((s, t) => s + t.amount, 0);
+  const ticketCount = data.tickets.reduce((s, t) => s + t.qty, 0);
+  const grandTotal = donationTotal + ticketTotal;
+
+  document.getElementById('total-amount').textContent = fmt(grandTotal);
+  document.getElementById('donation-total').textContent = fmt(donationTotal);
+  document.getElementById('ticket-sales').textContent = fmt(ticketTotal);
+  document.getElementById('ticket-count').textContent = ticketCount;
+  document.getElementById('ts-count').textContent = ticketCount;
+  document.getElementById('ts-revenue').textContent = fmt(ticketTotal);
+  document.getElementById('ts-price').textContent = '$' + TICKET_PRICE;
+
+  // Progress
+  const pct = Math.min(100, (grandTotal / GOAL) * 100);
+  document.getElementById('progress').style.width = pct + '%';
+  document.getElementById('goal-label').textContent = fmt(grandTotal) + ' / ' + fmt(GOAL) + ' goal';
+
+  // Leaderboard
+  const lb = document.getElementById('leaderboard');
+  const sorted = [...data.leaderboard].sort((a, b) => b.points - a.points);
+  if (sorted.length === 0) { lb.innerHTML = '<div class="empty">No referrals yet</div>'; }
+  else {
+    lb.innerHTML = sorted.map((entry, i) => {
+      const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : 'normal';
+      return `<div class="lb-row">
+        <div class="lb-rank ${rankClass}">${i + 1}</div>
+        <div class="lb-name">${entry.name}</div>
+        <div class="lb-pts">${entry.points}<span class="lb-pts-label"> pts</span></div>
+        <button class="btn btn-sm btn-danger" onclick="removeLeaderboard(${i})" style="margin-left: 8px; padding: 4px 8px; font-size: 11px;">✕</button>
+      </div>`;
+    }).join('');
+  }
+
+  // Donations
+  const dl = document.getElementById('donation-list');
+  if (data.donations.length === 0) { dl.innerHTML = '<tr><td colspan="3" class="empty">No donations yet</td></tr>'; }
+  else {
+    dl.innerHTML = data.donations.map((d, i) => 
+      `<tr><td class="donor-name">${d.name}</td><td class="donor-date">${d.date || '—'}</td><td class="donor-amt">${fmt(d.amount)} <button onclick="removeDonation(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;">✕</button></td></tr>`
+    ).join('');
+  }
+
+  // Tickets
+  const tl = document.getElementById('ticket-list');
+  if (data.tickets.length === 0) { tl.innerHTML = '<div class="empty">No tickets yet</div>'; }
+  else {
+    tl.innerHTML = '<table><thead><tr><th>Source</th><th>Qty</th><th>Amount</th></tr></thead><tbody>' +
+      data.tickets.map((t, i) => 
+        `<tr><td class="donor-name">${t.source} <span class="donor-date">(${t.date})</span></td><td>${t.qty}</td><td class="donor-amt">${fmt(t.amount)} <button onclick="removeTicket(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;">✕</button></td></tr>`
+      ).join('') + '</tbody></table>';
+  }
+}
+
+function toggleForm(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('active');
+}
+
+function addDonation() {
+  const name = document.getElementById('donor-name').value.trim();
+  const date = document.getElementById('donor-date').value;
+  const amount = parseInt(document.getElementById('donor-amount').value);
+  if (!name || !amount) return;
+  data.donations.push({name, date: date || '', amount});
+  document.getElementById('donor-name').value = '';
+  document.getElementById('donor-date').value = '';
+  document.getElementById('donor-amount').value = '';
+  save();
+}
+
+function addTicket() {
+  const source = document.getElementById('ticket-source').value.trim();
+  const qty = parseInt(document.getElementById('ticket-qty').value);
+  const amount = parseInt(document.getElementById('ticket-amount').value);
+  if (!source || !qty || !amount) return;
+  data.tickets.push({source, qty, amount, date: new Date().toISOString().split('T')[0]});
+  document.getElementById('ticket-source').value = '';
+  document.getElementById('ticket-qty').value = '';
+  document.getElementById('ticket-amount').value = '';
+  save();
+}
+
+function addLeaderboard() {
+  const name = document.getElementById('lb-name').value.trim();
+  const points = parseInt(document.getElementById('lb-pts').value);
+  if (!name || isNaN(points)) return;
+  data.leaderboard.push({name, points});
+  document.getElementById('lb-name').value = '';
+  document.getElementById('lb-pts').value = '';
+  save();
+}
+
+function removeDonation(i) { data.donations.splice(i, 1); save(); }
+function removeTicket(i) { data.tickets.splice(i, 1); save(); }
+function removeLeaderboard(i) { data.leaderboard.splice(i, 1); save(); }
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'veterans-5k-data.json'; a.click();
+}
+
+function importData() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try { data = JSON.parse(ev.target.result); save(); } catch(e) { alert('Invalid file'); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+render();
+</script>
+</body>
+</html>
