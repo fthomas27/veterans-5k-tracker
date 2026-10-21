@@ -140,14 +140,6 @@ td:last-child { text-align: right; }
     <div class="card">
       <h2>🏆 Referral Leaderboard</h2>
       <div id="leaderboard"></div>
-      <button class="btn btn-outline btn-sm toggle-add" onclick="toggleForm('lb-form')">+ Add referral</button>
-      <div class="add-form" id="lb-form">
-        <div class="form-row">
-          <input type="text" id="lb-name" placeholder="Name">
-          <input type="number" id="lb-pts" placeholder="Points" style="max-width: 100px">
-          <button class="btn btn-sm" onclick="addLeaderboard()">Add</button>
-        </div>
-      </div>
     </div>
 
     <!-- Tickets -->
@@ -159,15 +151,6 @@ td:last-child { text-align: right; }
         <div class="ticket-stat"><div class="num" id="ts-price">$44</div><div class="lbl">Per Ticket</div></div>
       </div>
       <div id="ticket-list"></div>
-      <button class="btn btn-outline btn-sm toggle-add" onclick="toggleForm('ticket-form')">+ Add tickets</button>
-      <div class="add-form" id="ticket-form">
-        <div class="form-row">
-          <input type="text" id="ticket-source" placeholder="Source (e.g. Andrew's order)">
-          <input type="number" id="ticket-qty" placeholder="Qty" style="max-width: 80px">
-          <input type="number" id="ticket-amt" placeholder="$ Amount" style="max-width: 100px">
-          <button class="btn btn-sm" onclick="addTicket()">Add</button>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -178,20 +161,10 @@ td:last-child { text-align: right; }
       <thead><tr><th>Donor</th><th>Date</th><th>Amount</th></tr></thead>
       <tbody id="donation-list"></tbody>
     </table>
-    <button class="btn btn-outline btn-sm toggle-add" style="margin-top: 12px;" onclick="toggleForm('donation-form')">+ Add donation</button>
-    <div class="add-form" id="donation-form">
-      <div class="form-row">
-        <input type="text" id="donor-name" placeholder="Donor name">
-        <input type="date" id="donor-date">
-        <input type="number" id="donor-amount" placeholder="$ Amount" style="max-width: 100px">
-        <button class="btn btn-sm" onclick="addDonation()">Add</button>
-      </div>
-    </div>
   </div>
 
   <div class="footer">
-    Veterans 5K • Nov 7, 2026 • Park City, UT<br>
-    Data saved locally • <a href="#" onclick="exportData(); return false;" style="color: var(--accent);">Export</a> • <a href="#" onclick="importData(); return false;" style="color: var(--accent);">Import</a>
+    Veterans 5K • Nov 7, 2026 • Park City, UT
   </div>
 </div>
 
@@ -228,9 +201,7 @@ const DEFAULT_DATA = {
   ],
 };
 
-let data = JSON.parse(localStorage.getItem('veterans5k') || 'null') || DEFAULT_DATA;
-
-function save() { localStorage.setItem('veterans5k', JSON.stringify(data)); render(); }
+let data = DEFAULT_DATA;
 
 function fmt(n) { return '$' + n.toLocaleString(); }
 
@@ -265,7 +236,6 @@ function render() {
         <div class="lb-rank ${rankClass}">${i + 1}</div>
         <div class="lb-name">${entry.name}</div>
         <div class="lb-pts">${entry.points}<span class="lb-pts-label"> pts</span></div>
-        <button class="btn btn-sm btn-danger" onclick="removeLeaderboard(${i})" style="margin-left: 8px; padding: 4px 8px; font-size: 11px;">✕</button>
       </div>`;
     }).join('');
   }
@@ -275,7 +245,7 @@ function render() {
   if (data.donations.length === 0) { dl.innerHTML = '<tr><td colspan="3" class="empty">No donations yet</td></tr>'; }
   else {
     dl.innerHTML = data.donations.map((d, i) => 
-      `<tr><td class="donor-name">${d.name}</td><td class="donor-date">${d.date || '—'}</td><td class="donor-amt">${fmt(d.amount)} <button onclick="removeDonation(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;">✕</button></td></tr>`
+      `<tr><td class="donor-name">${d.name}</td><td class="donor-date">${d.date || '—'}</td><td class="donor-amt">${fmt(d.amount)}</td></tr>`
     ).join('');
   }
 
@@ -285,74 +255,9 @@ function render() {
   else {
     tl.innerHTML = '<table><thead><tr><th>Source</th><th>Qty</th><th>Amount</th></tr></thead><tbody>' +
       data.tickets.map((t, i) => 
-        `<tr><td class="donor-name">${t.source} <span class="donor-date">(${t.date})</span></td><td>${t.qty}</td><td class="donor-amt">${fmt(t.amount)} <button onclick="removeTicket(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;">✕</button></td></tr>`
+        `<tr><td class="donor-name">${t.source} <span class="donor-date">(${t.date})</span></td><td>${t.qty}</td><td class="donor-amt">${fmt(t.amount)}</td></tr>`
       ).join('') + '</tbody></table>';
   }
-}
-
-function toggleForm(id) {
-  const el = document.getElementById(id);
-  el.classList.toggle('active');
-}
-
-function addDonation() {
-  const name = document.getElementById('donor-name').value.trim();
-  const date = document.getElementById('donor-date').value;
-  const amount = parseInt(document.getElementById('donor-amount').value);
-  if (!name || !amount) return;
-  data.donations.push({name, date: date || '', amount});
-  document.getElementById('donor-name').value = '';
-  document.getElementById('donor-date').value = '';
-  document.getElementById('donor-amount').value = '';
-  save();
-}
-
-function addTicket() {
-  const source = document.getElementById('ticket-source').value.trim();
-  const qty = parseInt(document.getElementById('ticket-qty').value);
-  const amount = parseInt(document.getElementById('ticket-amount').value);
-  if (!source || !qty || !amount) return;
-  data.tickets.push({source, qty, amount, date: new Date().toISOString().split('T')[0]});
-  document.getElementById('ticket-source').value = '';
-  document.getElementById('ticket-qty').value = '';
-  document.getElementById('ticket-amount').value = '';
-  save();
-}
-
-function addLeaderboard() {
-  const name = document.getElementById('lb-name').value.trim();
-  const points = parseInt(document.getElementById('lb-pts').value);
-  if (!name || isNaN(points)) return;
-  data.leaderboard.push({name, points});
-  document.getElementById('lb-name').value = '';
-  document.getElementById('lb-pts').value = '';
-  save();
-}
-
-function removeDonation(i) { data.donations.splice(i, 1); save(); }
-function removeTicket(i) { data.tickets.splice(i, 1); save(); }
-function removeLeaderboard(i) { data.leaderboard.splice(i, 1); save(); }
-
-function exportData() {
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'veterans-5k-data.json'; a.click();
-}
-
-function importData() {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'application/json';
-  input.onchange = e => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onload = ev => {
-      try { data = JSON.parse(ev.target.result); save(); } catch(e) { alert('Invalid file'); }
-    };
-    reader.readAsText(file);
-  };
-  input.click();
 }
 
 render();
