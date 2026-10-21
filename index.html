@@ -150,17 +150,16 @@ td:last-child { text-align: right; }
         <div class="ticket-stat"><div class="num" id="ts-revenue">$0</div><div class="lbl">Revenue</div></div>
         <div class="ticket-stat"><div class="num" id="ts-price">$44</div><div class="lbl">Per Ticket</div></div>
       </div>
-      <div id="ticket-list"></div>
     </div>
   </div>
 
   <!-- Donations -->
   <div class="card" style="margin-bottom: 24px;">
-    <h2>💰 Donations</h2>
-    <table id="donation-table">
-      <thead><tr><th>Donor</th><th>Date</th><th>Amount</th></tr></thead>
-      <tbody id="donation-list"></tbody>
-    </table>
+    <h2>💰 Total Donations</h2>
+    <div style="text-align: center; padding: 20px;">
+      <div style="font-size: 36px; font-weight: 800; color: var(--green);" id="donation-total-display">$0</div>
+      <div style="color: var(--muted); font-size: 13px; margin-top: 4px;" id="donation-count-display">0 donors</div>
+    </div>
   </div>
 
   <div class="footer">
@@ -240,24 +239,12 @@ function render() {
     }).join('');
   }
 
-  // Donations
-  const dl = document.getElementById('donation-list');
-  if (data.donations.length === 0) { dl.innerHTML = '<tr><td colspan="3" class="empty">No donations yet</td></tr>'; }
-  else {
-    dl.innerHTML = data.donations.map((d, i) => 
-      `<tr><td class="donor-name">${d.name}</td><td class="donor-date">${d.date || '—'}</td><td class="donor-amt">${fmt(d.amount)}</td></tr>`
-    ).join('');
-  }
+  // Donations total
+  document.getElementById('donation-total-display').textContent = fmt(donationTotal);
+  document.getElementById('donation-count-display').textContent = data.donations.length + ' donors';
 
-  // Tickets
-  const tl = document.getElementById('ticket-list');
-  if (data.tickets.length === 0) { tl.innerHTML = '<div class="empty">No tickets yet</div>'; }
-  else {
-    tl.innerHTML = '<table><thead><tr><th>Source</th><th>Qty</th><th>Amount</th></tr></thead><tbody>' +
-      data.tickets.map((t, i) => 
-        `<tr><td class="donor-name">${t.source} <span class="donor-date">(${t.date})</span></td><td>${t.qty}</td><td class="donor-amt">${fmt(t.amount)}</td></tr>`
-      ).join('') + '</tbody></table>';
-  }
+  // Tickets - just stats, no breakdown
+  // (stats already updated above)
 }
 
 render();
