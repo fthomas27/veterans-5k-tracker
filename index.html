@@ -169,41 +169,20 @@ td:last-child { text-align: right; }
 
 <script>
 const GOAL = 15000;
-const TICKET_PRICE = 44;
 
 // Default data
 const DEFAULT_DATA = {
-  donations: [
-    {name: "Outside Organization", date: "2026-10-01", amount: 8000},
-    {name: "Blake Sawyer", date: "2026-09-11", amount: 1000},
-    {name: "Allison & Jimmy May", date: "2026-09-25", amount: 500},
-    {name: "Thomas Birsic", date: "2026-10-08", amount: 200},
-    {name: "Catherine & Alex Cimos", date: "2026-10-10", amount: 100},
-    {name: "Robyn Veal", date: "2026-09-28", amount: 100},
-    {name: "Jeffrey Pierce", date: "2026-09-27", amount: 100},
-    {name: "Jaime Shrayber", date: "2026-10-14", amount: 100},
-    {name: "Melanie Monestere", date: "2026-10-07", amount: 150},
-    {name: "Chris Summers", date: "2026-10-11", amount: 50},
-    {name: "Erin Thomas", date: "2026-10-10", amount: 50},
-    {name: "Patty Brewer", date: "2026-10-07", amount: 50},
-    {name: "Oliver Abbett", date: "2026-10-07", amount: 25},
-    {name: "Luca Kehr", date: "2026-10-06", amount: 25},
-    {name: "Megan Newberry", date: "2026-10-05", amount: 25},
-    {name: "Sara Steinberger", date: "2026-10-04", amount: 25},
-    {name: "Finley Thomas", date: "2026-09-19", amount: 25},
-  ],
-  tickets: [
-    {source: "Bloomerang Registrations", qty: 36, amount: 1585, date: "2026-10-21", registrants: [
-      "Jaime Shrayber", "Chris Summers", "Blake Sawyer", "Catherine & Alex Cimos", "Erin Thomas",
-      "Thomas Birsic", "Oliver Abbett", "Melanie Monestere", "Patty Brewer", "Luca Kehr",
-      "Megan Newberry", "Sara Steinberger", "Robyn Veal", "Jeffrey Pierce", "Allison & Jimmy May",
-      "Finley Thomas", "Andrew Perillo", "Sosie Sheffert", "Ely Shrayber", "Ledger Moffat",
-      "Campbell Thomas", "Derek Eddy", "Hudson Fossey", "Will Haladin", "Max Flachsmann",
-      "Dane Hays", "Jacob Kindt", "Ben Carter", "Gavin Russell", "Urijah Mendez",
-      "Chris Donovan", "Katie Fry", "Lora Watts", "Estrellita Hoffmann", "The Nimocks",
-      "Mrs. Kennedy"
-    ]},
-  ],
+  donations: { total: 10425, count: 16 },
+  tickets: { total: 1585, count: 36, registrants: [
+    "Jaime Shrayber", "Chris Summers", "Blake Sawyer", "Catherine & Alex Cimos", "Erin Thomas",
+    "Thomas Birsic", "Oliver Abbett", "Melanie Monestere", "Patty Brewer", "Luca Kehr",
+    "Megan Newberry", "Sara Steinberger", "Robyn Veal", "Jeffrey Pierce", "Allison & Jimmy May",
+    "Finley Thomas", "Andrew Perillo", "Sosie Sheffert", "Ely Shrayber", "Ledger Moffat",
+    "Campbell Thomas", "Derek Eddy", "Hudson Fossey", "Will Haladin", "Max Flachsmann",
+    "Dane Hays", "Jacob Kindt", "Ben Carter", "Gavin Russell", "Urijah Mendez",
+    "Chris Donovan", "Katie Fry", "Lora Watts", "Estrellita Hoffmann", "The Nimocks",
+    "Mrs. Kennedy"
+  ]},
   leaderboard: [
     {name: "Ely Shrayber", points: 7},
     {name: "Sosie Sheffert", points: 7},
@@ -219,9 +198,9 @@ function fmt(n) { return '$' + n.toLocaleString(); }
 
 function render() {
   // Totals
-  const donationTotal = data.donations.reduce((s, d) => s + d.amount, 0);
-  const ticketTotal = data.tickets.reduce((s, t) => s + t.amount, 0);
-  const ticketCount = data.tickets.reduce((s, t) => s + t.qty, 0);
+  const donationTotal = data.donations.total;
+  const ticketTotal = data.tickets.total;
+  const ticketCount = data.tickets.count;
   const grandTotal = donationTotal + ticketTotal;
 
   document.getElementById('total-amount').textContent = fmt(grandTotal);
@@ -253,16 +232,16 @@ function render() {
 
   // Donations total
   document.getElementById('donation-total-display').textContent = fmt(donationTotal);
-  document.getElementById('donation-count-display').textContent = data.donations.length + ' donors';
+  document.getElementById('donation-count-display').textContent = data.donations.count + ' donors';
 
-  // Tickets - show registrant names only
+  // Registered runners
   const tl = document.getElementById('ticket-list');
-  const allRegistrants = data.tickets.flatMap(t => t.registrants || []);
-  if (allRegistrants.length === 0) {
-    tl.innerHTML = '<div class="empty" style="margin-top: 12px;">36 runners registered</div>';
+  const registrants = data.tickets.registrants || [];
+  if (registrants.length === 0) {
+    tl.innerHTML = '<div class="empty" style="margin-top: 12px;">' + ticketCount + ' runners registered</div>';
   } else {
-    tl.innerHTML = '<div style="margin-top: 16px;"><div style="font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Registered Runners (' + allRegistrants.length + ')</div><div style="display: flex; flex-wrap: wrap; gap: 6px;">' +
-      allRegistrants.map(name => `<span style="background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.1); border-radius: 20px; padding: 4px 12px; font-size: 13px;">${name}</span>`).join('') +
+    tl.innerHTML = '<div style="margin-top: 16px;"><div style="font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Registered Runners (' + registrants.length + ')</div><div style="display: flex; flex-wrap: wrap; gap: 6px;">' +
+      registrants.map(name => `<span style="background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.1); border-radius: 20px; padding: 4px 12px; font-size: 13px;">${name}</span>`).join('') +
       '</div></div>';
   }
 }
