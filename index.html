@@ -79,6 +79,7 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
 
 /* Runners */
 .section-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin: 16px 0 8px; }
+.runner-note { font-size: 12px; color: var(--muted); margin-top: 10px; }
 .runner-list { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; }
 .runner { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.1); border-radius: 20px; padding: 4px 12px; font-size: 13px; }
 
@@ -192,21 +193,16 @@ const RACE_DAY = new Date(2026, 10, 7); // Nov 7, 2026 (local time)
 
 // Default data
 const DEFAULT_DATA = {
-  // +$400 / +3 on Oct 22: Bloomerang donations from Oct 17-18 that were missing.
-  donations: { total: 10825, count: 19 },
-  // Ticket fees only (not covered costs). Oct 14-21 amounts are exact from Bloomerang
-  // emails ($1,260 for 32 tickets); the 10 tickets through Oct 12 are still estimated at $440.
-  tickets: { total: 1700, count: 42, registrants: [
-    "Jaime Shrayber", "Chris Summers", "Blake Sawyer", "Catherine & Alex Cimos", "Erin Thomas",
-    "Thomas Birsic", "Oliver Abbett", "Melanie Monestere", "Patty Brewer", "Luca Kehr",
-    "Megan Newberry", "Sara Steinberger", "Robyn Veal", "Jeffrey Pierce", "Allison & Jimmy May",
-    "Finley Thomas", "Andrew Perillo", "Sosie Sheffert", "Ely Shrayber", "Ledger Moffat",
-    "Campbell Thomas", "Derek Eddy", "Hudson Fossey", "Will Haladin", "Max Flachsmann",
-    "Dane Hays", "Jacob Kindt", "Ben Carter", "Gavin Russell", "Urijah Mendez",
-    "Chris Donovan", "Katie Fry", "Lora Watts", "The Nimocks", "Mrs. Kennedy",
+  // Real donations only. Registration fees are counted under tickets, not here.
+  donations: { total: 10350, count: 10 },
+  // Ticket fees only (not covered costs), from Katie's Oct 12 report + Bloomerang emails.
+  // registrants = the person who registered; group orders include their guests.
+  tickets: { total: 1760, count: 42, registrants: [
+    "Finley Thomas", "Jeffrey Pierce", "Sara Steinberger", "Megan Newberry", "Luca Kehr",
+    "Patty Brewer", "Melanie Monestere", "Oliver Abbett", "Erin Thomas", "Jaime Shrayber",
     "Ron Allen", "David Sanchez", "Sitinee Sheffert", "Rita Shrayber", "Harper Ray",
     "Keira Gallagher", "Beth & Scott Cummings", "Bo Thomas", "Bonnie Moffat", "Joseph Romero",
-    "Julie Hughes"
+    "Andrew Perillo", "Julie Hughes"
   ]},
   // === VOLUNTEERS — edit only this list to update the Volunteers Needed card ===
   // needed = total spots for the role, filled = people signed up so far.
@@ -325,8 +321,9 @@ function render() {
   if (registrants.length === 0) {
     tl.innerHTML = '<div class="empty" style="margin-top: 12px;">' + ticketCount + ' runners registered</div>';
   } else {
-    tl.innerHTML = `<div class="section-label">Registered Runners (${registrants.length})</div>` +
-      '<ul class="runner-list">' + registrants.map(name => `<li class="runner">${esc(name)}</li>`).join('') + '</ul>';
+    tl.innerHTML = `<div class="section-label">Registered Runners (${ticketCount})</div>` +
+      '<ul class="runner-list">' + registrants.map(name => `<li class="runner">${esc(name)}</li>`).join('') + '</ul>' +
+      (ticketCount > registrants.length ? '<div class="runner-note">Group registrations include guests.</div>' : '');
   }
 }
 
