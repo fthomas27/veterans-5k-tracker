@@ -225,6 +225,9 @@ function render() {
   const grandTotal = donationTotal + ticketTotal;
 
   document.getElementById('total-amount').textContent = fmt(grandTotal);
+  document.getElementById('donation-total').textContent = fmt(donationTotal);
+  document.getElementById('ticket-sales').textContent = fmt(ticketTotal);
+  document.getElementById('ticket-count').textContent = ticketCount;
   document.getElementById('ts-count').textContent = ticketCount;
   document.getElementById('ts-revenue').textContent = fmt(ticketTotal);
 
