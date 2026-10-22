@@ -192,16 +192,21 @@ const RACE_DAY = new Date(2026, 10, 7); // Nov 7, 2026 (local time)
 
 // Default data
 const DEFAULT_DATA = {
-  donations: { total: 10425, count: 16 },
-  tickets: { total: 1585, count: 36, registrants: [
+  // +$400 / +3 on Oct 22: Bloomerang donations from Oct 17-18 that were missing.
+  donations: { total: 10825, count: 19 },
+  // Ticket fees only (not covered costs). Oct 14-21 amounts are exact from Bloomerang
+  // emails ($1,260 for 32 tickets); the 10 tickets through Oct 12 are still estimated at $440.
+  tickets: { total: 1700, count: 42, registrants: [
     "Jaime Shrayber", "Chris Summers", "Blake Sawyer", "Catherine & Alex Cimos", "Erin Thomas",
     "Thomas Birsic", "Oliver Abbett", "Melanie Monestere", "Patty Brewer", "Luca Kehr",
     "Megan Newberry", "Sara Steinberger", "Robyn Veal", "Jeffrey Pierce", "Allison & Jimmy May",
     "Finley Thomas", "Andrew Perillo", "Sosie Sheffert", "Ely Shrayber", "Ledger Moffat",
     "Campbell Thomas", "Derek Eddy", "Hudson Fossey", "Will Haladin", "Max Flachsmann",
     "Dane Hays", "Jacob Kindt", "Ben Carter", "Gavin Russell", "Urijah Mendez",
-    "Chris Donovan", "Katie Fry", "Lora Watts", "Estrellita Hoffmann", "The Nimocks",
-    "Mrs. Kennedy"
+    "Chris Donovan", "Katie Fry", "Lora Watts", "The Nimocks", "Mrs. Kennedy",
+    "Ron Allen", "David Sanchez", "Sitinee Sheffert", "Rita Shrayber", "Harper Ray",
+    "Keira Gallagher", "Beth & Scott Cummings", "Bo Thomas", "Bonnie Moffat", "Joseph Romero",
+    "Julie Hughes"
   ]},
   // === VOLUNTEERS — edit only this list to update the Volunteers Needed card ===
   // needed = total spots for the role, filled = people signed up so far.
@@ -216,6 +221,7 @@ const DEFAULT_DATA = {
     {name: "Sosie Sheffert", points: 7},
     {name: "Andrew Perillo", points: 5},
     {name: "Ledger Moffat", points: 4},
+    {name: "Courtney Cummings", points: 2},
     {name: "Campbell Thomas", points: 1},
   ],
 };
@@ -267,7 +273,7 @@ function render() {
   }
 
   // Last updated
-  document.getElementById('last-updated').textContent = 'Last updated Oct 21, 2026';
+  document.getElementById('last-updated').textContent = 'Last updated Oct 22, 2026';
 
   // Leaderboard
   const lb = document.getElementById('leaderboard');
