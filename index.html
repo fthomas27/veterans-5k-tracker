@@ -148,7 +148,6 @@ td:last-child { text-align: right; }
       <div class="ticket-stats">
         <div class="ticket-stat"><div class="num" id="ts-count">0</div><div class="lbl">Sold</div></div>
         <div class="ticket-stat"><div class="num" id="ts-revenue">$0</div><div class="lbl">Revenue</div></div>
-        <div class="ticket-stat"><div class="num" id="ts-price">$44</div><div class="lbl">Per Ticket</div></div>
       </div>
       <div id="ticket-list"></div>
     </div>
@@ -176,28 +175,41 @@ const TICKET_PRICE = 44;
 const DEFAULT_DATA = {
   donations: [
     {name: "Outside Organization", date: "2026-10-01", amount: 8000},
-    {name: "Anonymous Donor #1", date: "2026-10-10", amount: 1000},
-    {name: "Anonymous Donor #2", date: "2026-10-12", amount: 500},
-    {name: "Anonymous Donor #3", date: "2026-10-17", amount: 200},
-    {name: "Anonymous Donor #4", date: "2026-10-18", amount: 100},
-    {name: "Anonymous Donor #5", date: "2026-10-19", amount: 100},
-    {name: "Anonymous Donor #6", date: "2026-10-15", amount: 200},
-    {name: "Anonymous Donor #7", date: "2026-10-15", amount: 100},
-    {name: "Anonymous Donor #8", date: "2026-10-15", amount: 100},
-    {name: "Anonymous Donor #9", date: "2026-10-15", amount: 50},
+    {name: "Blake Sawyer", date: "2026-09-11", amount: 1000},
+    {name: "Allison & Jimmy May", date: "2026-09-25", amount: 500},
+    {name: "Thomas Birsic", date: "2026-10-08", amount: 200},
+    {name: "Catherine & Alex Cimos", date: "2026-10-10", amount: 100},
+    {name: "Robyn Veal", date: "2026-09-28", amount: 100},
+    {name: "Jeffrey Pierce", date: "2026-09-27", amount: 100},
+    {name: "Jaime Shrayber", date: "2026-10-14", amount: 100},
+    {name: "Melanie Monestere", date: "2026-10-07", amount: 150},
+    {name: "Chris Summers", date: "2026-10-11", amount: 50},
+    {name: "Erin Thomas", date: "2026-10-10", amount: 50},
+    {name: "Patty Brewer", date: "2026-10-07", amount: 50},
+    {name: "Oliver Abbett", date: "2026-10-07", amount: 25},
+    {name: "Luca Kehr", date: "2026-10-06", amount: 25},
+    {name: "Megan Newberry", date: "2026-10-05", amount: 25},
+    {name: "Sara Steinberger", date: "2026-10-04", amount: 25},
+    {name: "Finley Thomas", date: "2026-09-19", amount: 25},
   ],
   tickets: [
-    {source: "Online Sales (Oct 12)", qty: 10, amount: 440, date: "2026-10-12", registrants: []},
-    {source: "Online Sales (Oct 14)", qty: 4, amount: 176, date: "2026-10-14", registrants: []},
-    {source: "Online Sales (Oct 15-21)", qty: 17, amount: 748, date: "2026-10-21", registrants: []},
-    {source: "Bulk Order", qty: 5, amount: 221, date: "2026-10-20", registrants: []},
+    {source: "Bloomerang Registrations", qty: 36, amount: 1585, date: "2026-10-21", registrants: [
+      "Jaime Shrayber", "Chris Summers", "Blake Sawyer", "Catherine & Alex Cimos", "Erin Thomas",
+      "Thomas Birsic", "Oliver Abbett", "Melanie Monestere", "Patty Brewer", "Luca Kehr",
+      "Megan Newberry", "Sara Steinberger", "Robyn Veal", "Jeffrey Pierce", "Allison & Jimmy May",
+      "Finley Thomas", "Andrew Perillo", "Sosie Sheffert", "Ely Shrayber", "Ledger Moffat",
+      "Campbell Thomas", "Derek Eddy", "Hudson Fossey", "Will Haladin", "Max Flachsmann",
+      "Dane Hays", "Jacob Kindt", "Ben Carter", "Gavin Russell", "Urijah Mendez",
+      "Chris Donovan", "Katie Fry", "Lora Watts", "Estrellita Hoffmann", "The Nimocks",
+      "Mrs. Kennedy"
+    ]},
   ],
   leaderboard: [
-    {name: "Leader #1", points: 7},
-    {name: "Leader #2", points: 7},
-    {name: "Leader #3", points: 5},
-    {name: "Leader #4", points: 4},
-    {name: "Leader #5", points: 1},
+    {name: "Ely Shrayber", points: 7},
+    {name: "Sosie Sheffert", points: 7},
+    {name: "Andrew Perillo", points: 5},
+    {name: "Ledger Moffat", points: 4},
+    {name: "Campbell Thomas", points: 1},
   ],
 };
 
