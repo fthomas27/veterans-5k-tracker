@@ -150,6 +150,7 @@ td:last-child { text-align: right; }
         <div class="ticket-stat"><div class="num" id="ts-revenue">$0</div><div class="lbl">Revenue</div></div>
         <div class="ticket-stat"><div class="num" id="ts-price">$44</div><div class="lbl">Per Ticket</div></div>
       </div>
+      <div id="ticket-list"></div>
     </div>
   </div>
 
@@ -186,10 +187,10 @@ const DEFAULT_DATA = {
     {name: "Anonymous Donor #9", date: "2026-10-15", amount: 50},
   ],
   tickets: [
-    {source: "Online Sales (Oct 12)", qty: 10, amount: 440, date: "2026-10-12"},
-    {source: "Online Sales (Oct 14)", qty: 4, amount: 176, date: "2026-10-14"},
-    {source: "Online Sales (Oct 15-21)", qty: 17, amount: 748, date: "2026-10-21"},
-    {source: "Bulk Order", qty: 5, amount: 221, date: "2026-10-20"},
+    {source: "Online Sales (Oct 12)", qty: 10, amount: 440, date: "2026-10-12", registrants: []},
+    {source: "Online Sales (Oct 14)", qty: 4, amount: 176, date: "2026-10-14", registrants: []},
+    {source: "Online Sales (Oct 15-21)", qty: 17, amount: 748, date: "2026-10-21", registrants: []},
+    {source: "Bulk Order", qty: 5, amount: 221, date: "2026-10-20", registrants: []},
   ],
   leaderboard: [
     {name: "Leader #1", points: 7},
@@ -243,8 +244,16 @@ function render() {
   document.getElementById('donation-total-display').textContent = fmt(donationTotal);
   document.getElementById('donation-count-display').textContent = data.donations.length + ' donors';
 
-  // Tickets - just stats, no breakdown
-  // (stats already updated above)
+  // Tickets - show registrant names only
+  const tl = document.getElementById('ticket-list');
+  const allRegistrants = data.tickets.flatMap(t => t.registrants || []);
+  if (allRegistrants.length === 0) {
+    tl.innerHTML = '<div class="empty" style="margin-top: 12px;">36 runners registered</div>';
+  } else {
+    tl.innerHTML = '<div style="margin-top: 16px;"><div style="font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Registered Runners (' + allRegistrants.length + ')</div><div style="display: flex; flex-wrap: wrap; gap: 6px;">' +
+      allRegistrants.map(name => `<span style="background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.1); border-radius: 20px; padding: 4px 12px; font-size: 13px;">${name}</span>`).join('') +
+      '</div></div>';
+  }
 }
 
 render();
