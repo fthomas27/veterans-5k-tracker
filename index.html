@@ -131,6 +131,10 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
         <div class="num" id="ticket-sales">$0</div>
         <div class="lbl">Ticket Sales</div>
       </div>
+      <div class="breakdown-item" id="fees-item">
+        <div class="num" id="fees-covered">$0</div>
+        <div class="lbl">Fees Covered</div>
+      </div>
       <div class="breakdown-item">
         <div class="num" id="ticket-count">0</div>
         <div class="lbl">Tickets Sold</div>
@@ -194,8 +198,11 @@ const RACE_DAY = new Date(2026, 10, 7); // Nov 7, 2026 (local time)
 // Default data
 const DEFAULT_DATA = {
   // Real donations only. Registration fees are counted under tickets, not here.
-  // Includes one $40 cash donation collected in person (Oct 22).
-  donations: { total: 10440, count: 12 },
+  // Includes one $40 cash donation (Oct 22) and Finley Thomas's $1 add-on from Katie's report.
+  donations: { total: 10441, count: 13 },
+  // Extra people chose to pay to cover Bloomerang processing fees: $43 on registrations,
+  // $18 on donations, $5 in Katie's Oct 12 report.
+  feesCovered: 66,
   // Ticket fees only (not covered costs), from Katie's Oct 12 report + Bloomerang emails.
   // registrants = the person who registered; group orders include their guests.
   tickets: { total: 1810, count: 45, registrants: [
@@ -240,9 +247,12 @@ function render() {
   const donationTotal = data.donations.total;
   const ticketTotal = data.tickets.total;
   const ticketCount = data.tickets.count;
-  const grandTotal = donationTotal + ticketTotal;
+  const feesCovered = data.feesCovered || 0;
+  const grandTotal = donationTotal + ticketTotal + feesCovered;
 
   document.getElementById('total-amount').textContent = fmt(grandTotal);
+  document.getElementById('fees-covered').textContent = fmt(feesCovered);
+  document.getElementById('fees-item').hidden = feesCovered === 0;
   document.getElementById('donation-total').textContent = fmt(donationTotal);
   document.getElementById('ticket-sales').textContent = fmt(ticketTotal);
   document.getElementById('ticket-count').textContent = ticketCount;
