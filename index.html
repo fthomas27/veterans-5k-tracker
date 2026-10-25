@@ -207,13 +207,13 @@ const DEFAULT_DATA = {
   feesCovered: 66,
   // Ticket fees only (not covered costs). Matches Carl's Oct 22 spreadsheet exactly.
   // registrants = the person who registered; group orders include their guests.
-  tickets: { total: 1910, count: 47, registrants: [
+  tickets: { total: 1945, count: 49, registrants: [
     "Finley Thomas", "Jeffrey Pierce", "Sara Steinberger", "Megan Newberry", "Luca Kehr",
     "Patty Brewer", "Melanie Monestere", "Oliver Abbett", "Erin Thomas", "Jaime Shrayber",
     "Ron Allen", "David Sanchez", "Sitinee Sheffert", "Rita Shrayber", "Harper Ray",
     "Keira Gallagher", "Beth & Scott Cummings", "Bo Thomas", "Bonnie Moffat", "Joseph Romero",
     "Andrew Perillo", "Julie Hughes", "Lee Zeidner", "Marleigh Pierce", "Marcy Allen",
-    "Peter Haglin"
+    "Peter Haglin", "Ledger Moffat"
   ]},
   // === VOLUNTEERS — edit only this list to update the Volunteers Needed card ===
   // needed = total spots for the role, filled = people signed up so far.
@@ -227,7 +227,7 @@ const DEFAULT_DATA = {
     {name: "Ely Shrayber", points: 8},
     {name: "Sosie Sheffert", points: 7},
     {name: "Andrew Perillo", points: 6}, // includes referrals credited to Kelly Perillo
-    {name: "Ledger Moffat", points: 6},
+    {name: "Ledger Moffat", points: 7},
     {name: "Campbell Thomas", points: 1},
     {name: "Derek Eddy", points: 2},
   ],
@@ -283,7 +283,7 @@ function render() {
   }
 
   // Last updated
-  document.getElementById('last-updated').textContent = 'Last updated Oct 23, 2026';
+  document.getElementById('last-updated').textContent = 'Last updated Oct 24, 2026';
 
   // Leaderboard
   const lb = document.getElementById('leaderboard');
